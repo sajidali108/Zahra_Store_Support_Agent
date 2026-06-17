@@ -1,0 +1,14 @@
+beautifulsoup4>=4.12.3
+fastapi[standard]>=0.115.0
+faiss-cpu>=1.9.0
+httpx>=0.28.0
+langchain>=0.3.0
+langchain-community>=0.3.0
+langchain-core>=0.3.0
+langchain-groq>=0.2.0
+langchain-huggingface>=0.1.0
+langgraph>=0.2.60
+pydantic>=2.9.0
+pydantic-settings>=2.6.0
+python-dotenv>=1.0.1
+sentence-transformers>=3.0.0
