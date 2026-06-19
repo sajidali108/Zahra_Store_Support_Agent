@@ -291,7 +291,19 @@ def _summarize_zahra_tracking(
             if (item.get("status") or "").strip().lower() not in {"demanifested", "dlvry phase i", "dlvry phase ii"}
         ]
         latest_event = general_history[-1] if general_history else {}
-        latest_status = latest_event.get("status") or "Unknown"
+        status_val = latest_event.get("status")
+        if not status_val:
+            # Fallback to the top-level API status or delivery status
+            status_val = data.get("status") or data.get("delivery_status")
+            
+        if status_val:
+            status_lower = str(status_val).strip().lower()
+            if status_lower == "booked":
+                latest_status = "Booked with courier"
+            else:
+                latest_status = str(status_val).strip().title()
+        else:
+            latest_status = "Unknown"
 
     # Construct the timeline history
     formatted_history = []
