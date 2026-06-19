@@ -14,6 +14,7 @@ from agent.prompts import build_system_prompt
 from agent.router import (
     IntentCategory,
     classify_intent,
+    classify_intent_llm,
     is_off_topic,
 )
 from agent.tools import get_tools_for_category
@@ -199,10 +200,12 @@ def _history_to_messages(
     return messages
 
 
-def router_node(state: AgentState) -> AgentState:
-    history = state.get("conversation_history")
-    context = f"{_recent_text(history)} {state['message']}"
-    return {"category": classify_intent(context)}
+async def router_node(state: AgentState) -> AgentState:
+    category = await classify_intent_llm(
+        state["message"],
+        state.get("conversation_history")
+    )
+    return {"category": category}
 
 
 def _build_react_agent(
@@ -313,8 +316,7 @@ async def stream_agent(
 
     model_message = message
 
-    context = f"{_recent_text(conversation_history)} {message}"
-    category = classify_intent(context)
+    category = await classify_intent_llm(message, conversation_history)
     react_agent = _build_react_agent(
         category=category,
         session_token=session_token,
